@@ -15,5 +15,32 @@ Use the geojson file from http://data.okfn.org/data/datasets/geo-boundaries-worl
 
 https://public.tableau.com/views/IMR2010_Asia/IMR_Asia_2010?:embed=y&:display_count=yes
 
+![Embed Code](IMR_Asia_2010.png)
+
+### 1.2 Extract the Spacial information from GoogleMap
+
+GoogleMap provides the geocoding API the latitude and logitude for each country can be extracted with Python in Jupyter Notebook.
+
+Install and import googlemaps package for Python, authenticate with Google Maps using API key:
+```
+!pip install googlemaps
+```
+
+```
+import googlemaps
+gomaps = googlemaps.Client(key='AI...')
+```
+('AI...' is your Google Maps API key.)
+
+Import pandas to read the IMR data
+```
+import pandas as pd
+import numpy as np 
+IMR = pd.read_csv('IMR.csv',encoding = "ISO-8859-1")
+```
+
+
+
+
 
 
