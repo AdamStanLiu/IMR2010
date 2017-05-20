@@ -32,12 +32,111 @@ gomaps = googlemaps.Client(key='AI...')
 ```
 ('AI...' is your Google Maps API key.)
 
-Import pandas to read the IMR data
+Import pandas to read the IMR data:
 ```
 import pandas as pd
 import numpy as np 
 IMR = pd.read_csv('IMR.csv',encoding = "ISO-8859-1")
 ```
+
+Extract the latitude and longitude from googlemaps:
+```
+lat = []
+lng = []
+for i in range(len(IMR['Area'])):
+    gm_re = gomaps.geocode(IMR['Area'][i])
+    lat.append(gm_re[0]['geometry']['location']['lat'])
+    lng.append(gm_re[0]['geometry']['location']['lng']) 
+```
+
+Write geoinfomation data to 'geoinf.csv' for Tableau drawing the maps:
+```
+country = list(IMR['Area'])
+col=['Country','Latitude','Longitude']
+geoinf = pd.DataFrame([country,lat,lng], col)
+geoinf = geoinf.transpose()
+geoinf.to_csv('geoinf.csv')
+```
+
+Then import 'IMR.csv' and 'geoinf.csv' to Tableau, connected two data file by country, plot the global IMR:
+
+https://public.tableau.com/views/IMR_2010_globe/Dashboard1?:embed=y&:display_count=yes
+
+![Embed Code](IMR_Globe.png)
+
+
+## 2. Visualizing in Jupyter notebook with gmaps package
+
+gmaps is a plugin for including interactive Google maps in the IPython Notebook. It contains the GeoJSON of countries.
+
+First, install gmaps:
+```
+!pip install gmaps
+```
+Import gmaps and matplotlib for plotting, authenticate with Google Maps using API key, and load geojson:
+```
+from matplotlib.cm import viridis
+from matplotlib.colors import to_hex
+
+import gmaps
+import gmaps.geojson_geometries
+
+gmaps.configure(api_key="AI...")
+
+#Load geojson
+countries_geojson = gmaps.geojson_geometries.load_geometry('countries')
+```
+
+Mapping the IMR to colors:
+```
+imr_max = max(IMR['Data Value'])
+imr_min = min(IMR['Data Value'])
+imr_range = imr_max - imr_min
+
+def calc_color(imr):
+    norm_imr = (imr - imr_min) / imr_range
+    inv_imr = 1.0 - norm_imr
+    mpl_color = viridis(inv_imr)
+    gmaps_color = to_hex(mpl_color, keep_alpha=False)
+    return gmaps_color
+```
+
+Decides the color for each contry:
+```
+colors = []
+for feature in countries_geojson['features']:
+    country_name = feature['properties']['name']
+    try:
+        if(len(IMR.loc[IMR['Area'] == country_name]['Data Value'])):
+            imr = int(IMR.loc[IMR['Area'] == country_name]['Data Value'])
+            color = calc_color(imr)
+    except KeyError:
+        # no IMR for that country: return default color
+        color = (0, 0, 0, 0.3)
+    colors.append(color)
+```
+
+Finally, plotting the map:
+```
+fig = gmaps.figure()
+imr_layer = gmaps.geojson_layer(countries_geojson, 
+                                fill_color=colors, 
+                                stroke_color=colors,
+                                fill_opacity=0.8)
+fig.add_layer(imr_layer)
+fig
+```
+
+It will return a google map with detailed geographic information and interactice in the Jupyter notebook like this:
+
+![Embed Code](MAPS.png)
+
+
+
+
+
+
+
 
 
 
