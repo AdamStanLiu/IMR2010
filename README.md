@@ -1,7 +1,7 @@
 # IMR2010
 Visualize Infant mortality rate (IMR) 2010
 
-The infant mortality rate (IMR) data can be downlaoded from Devinfo, a database developed by UNICEF in cooperation with the UN System to assist the UN and Member States in tracking progress toward the Millennium Development Goals (MDGs). 'IMR.csv' in this repository contains the Infant mortality rate (IMR) -- Deaths per 1000 live births of the countrys in 2010.
+The infant mortality rate (IMR) data can be downlaoded from Devinfo, a database developed by UNICEF in cooperation with the UN System to assist the UN and Member States in tracking progress toward the Millennium Development Goals (MDGs). 'IMR.csv' in this repository contains the Infant mortality rate (IMR) -- Deaths per 1000 live births of the countrys in 2010. (Originally download from http://www.devinfo.org/libraries/aspx/dataview.aspx.)
 
 ## 1. Visualizing in Tableau
 
